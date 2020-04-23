@@ -150,21 +150,38 @@ def get_response(url):
     except:
         print("Could not get response for URL")
 
-
-
+    
 def simhash(url):
     resp = get_response(url)
     txt = resp.raw_response
     #print(html2text.html2text(txt))
     soup = BeautifulSoup(txt, "html.parser")
     text = soup.get_text()
+    l = tokenize(text)
+    d = computeWordFrequencies(l)
 
-    lines = (line.strip() for line in text.splitlines())
-    chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
     # drop blank lines
-    text = '\n'.join(chunk for chunk in chunks if chunk)
 
-    print(text)
+    print(text)        
+
+    print(urlparse('http://www.ics.uci.edu/ugrad/courses/listing.php?year=2016&level=Graduate&department=STATS&program=ALL/about/about_factsfigures.php/community/alumni').netloc == urlparse('http://www.ics.uci.edu/ugrad/courses/listing.php?year=2016&level=Graduate&department=STATS&program=ALL/about/about_factsfigures.php/involved/leadership_council').netloc)
+
+def tokenize(text):
+    l = []
+    for line in text:
+        for i in re.findall(r'[a-zA-Z0-9]{2,}', line):
+            i = i.lower()
+            l.append(i)
+    return l
+
+def computeWordFrequencies(tokens):
+    d = {}
+    for i in tokens:
+        if i in d.keys():
+            d[i]+=1
+        else:
+            d[i] = 1
+    return d
 
     
 
